@@ -1,0 +1,26 @@
+.custom-post-type-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.custom-post-type-card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    overflow: hidden;
+    width: 300px;
+}
+
+.custom-post-type-card-image img {
+    width: 100%;
+    height: auto;
+}
+
+.custom-post-type-card-content {
+    padding: 16px;
+}
+
+.custom-post-type-card-title {
+    font-size: 1.25em;
+    margin: 0;
+}
