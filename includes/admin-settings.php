@@ -3,6 +3,19 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
+function wp_custom_post_type_admin_enqueue_scripts($hook_suffix) {
+    if ($hook_suffix === 'settings_page_wp-post-loader') {
+        // Enqueue Select2 CSS and JS
+        wp_enqueue_style('wppl-admin-css', plugin_dir_url(__FILE__) . 'css/wppl-admin-style.css', array(), rand(), true);
+        wp_enqueue_style('select2-css', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css');
+        wp_enqueue_script('select2-js', 'https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js', array('jquery'), null, true);
+
+        // Custom script to initialize Select2
+        wp_enqueue_script('wppl-admin-js', plugin_dir_url(__FILE__) . 'js/wppl-admin-script.js', array('jquery', 'select2-js'), rand(), true);
+    }
+}
+add_action('admin_enqueue_scripts', 'wp_custom_post_type_admin_enqueue_scripts');
+
 function wppl_add_admin_menu() {
     add_options_page(
         'WP Post Loader Settings',
@@ -48,11 +61,11 @@ function wppl_custom_post_type_render() {
         '_builtin' => false
     );
     $post_types = get_post_types($args, 'objects');
-    $selected_post_type = $options['wppl_custom_post_type'] ?? '';
+    $selected_post_type = $options['wppl_custom_post_type'] ?? [];
     ?>
-    <select name="wppl_settings[wppl_custom_post_type]">
+    <select name="wppl_settings[wppl_custom_post_type][]" id="wp_custom_post_type_field" class="wppl-select2" multiple>
         <?php foreach ($post_types as $post_type) { ?>
-            <option value="<?php echo esc_attr($post_type->name); ?>"  <?php selected($selected_post_type, $post_type->name); ?> >
+            <option value="<?php echo esc_attr($post_type->name); ?>" <?php echo in_array($post_type->name, (array)$selected_post_type) ? 'selected' : ''; ?>>
                 <?php echo esc_html($post_type->labels->name); ?>
             </option>
         <?php } ?>
